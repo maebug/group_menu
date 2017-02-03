@@ -1,0 +1,9 @@
+name: Group Menu
+description: Gives the ability to create and manage menus for groups
+package: Group
+
+dependencies:
+ - group:group
+
+type: module
+core: 8.x

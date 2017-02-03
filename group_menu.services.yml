@@ -1,0 +1,5 @@
+services:
+  access_check.group_menu.add:
+    class: Drupal\group_menu\Access\GroupMenuAddAccessCheck
+    tags:
+      - { name: access_check, applies_to: _group_menu_add_access }

@@ -1,0 +1,12 @@
+route_callbacks:
+  - '\Drupal\group_menu\Routing\GroupMenuRouteProvider::getRoutes'
+
+entity.group_menu.group_menu_add_form:
+  path: '/group/{group}/menu/create/new'
+  defaults:
+    _controller: '\Drupal\group_menu\Controller\GroupMenuWizardController::addForm'
+    _title_callback: '\Drupal\group_menu\Controller\GroupMenuWizardController::addFormTitle'
+  requirements:
+    _group_menu_add_access: 'TRUE'
+  options:
+    _group_operation_route: 'TRUE'

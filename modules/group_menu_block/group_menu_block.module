@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Adds theme suggestions for group menus
+ */
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter()
+ *
+ * Add suggestions for menus in the group_menus block
+ */
+function group_menu_block_theme_suggestions_menu_alter(array &$suggestions, array $variables) {
+  if (isset($variables['attributes']['base_plugin_id']) && $variables['attributes']['base_plugin_id'] == 'group_menus') {
+    $suggestions[] = 'menu__group_menu';
+    if (isset($variables['menu_name'])) {
+      $suggestions[] = 'menu__group_menu__' . strtr($variables['menu_name'], '-', '_');
+    }
+  }
+}
+
+/**
+ * Implements template_preprocess_block()
+ *
+ * Pass block plugin information to menu theme suggestions
+ */
+function group_menu_block_preprocess_block(&$variables) {
+  if (isset($variables['elements']['#base_plugin_id']) && $variables['elements']['#base_plugin_id'] == 'group_menus') {
+    $variables['content']['#attributes']['base_plugin_id'] = $variables['elements']['#base_plugin_id'];
+  }
+}

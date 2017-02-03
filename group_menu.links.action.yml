@@ -1,0 +1,11 @@
+group_menu.group_menu_relate_menu:
+  route_name: 'entity.group_menu.group_menu_relate_menu'
+  title: 'Relate menu'
+  appears_on:
+    - 'view.group_menus.page_1'
+
+group_menut.group_menu_add_menu:
+  route_name: 'entity.group_menu.group_menu_add_menu'
+  title: 'Create menu'
+  appears_on:
+    - 'view.group_menus.page_1'

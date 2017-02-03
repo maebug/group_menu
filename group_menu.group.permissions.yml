@@ -1,0 +1,3 @@
+access group_menu overview:
+  title: 'Access group menu overview'
+  description: 'Access the overview of all group menus'

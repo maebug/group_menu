@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file
+ * Enables Group functionality for the Menu module.
+ */
+
+use Drupal\group\Entity\Group;
+use Drupal\group\Entity\GroupContentType;
+use Drupal\system\MenuInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Database\Database;
+use Drupal\Core\Session\AccountInterface;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function group_menu_entity_type_alter(array &$entity_types) {
+  /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
+  // Add the menu creation wizard steps as entity forms.
+  $entity_types['menu']->setFormClass('group_menu-form', 'Drupal\group_menu\Form\GroupMenuFormStep1');
+  $entity_types['group_menu']->setFormClass('group_menu-form', 'Drupal\group_menu\Form\GroupMenuFormStep2');
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function group_menu_menu_insert(MenuInterface $menu) {
+  \Drupal::service('plugin.manager.group_content_enabler')->clearCachedDefinitions();
+}
+
+/**
+ * Implements hook_node_access().
+ *
+ * When trying to view, update or delete a node it suffices to have the right to
+ * do so in only one group the node belongs to. If you wish to prevent any such
+ * action on your own terms, implement hook_node_access() in your module.
+ */
+function group_menu_menu_access(MenuInterface $node, $op, AccountInterface $account) {
+  return AccessResult::allowed();
+  // We do not care about create access as we have our own wizard for that. Any
+  // operation aside from 'view', 'update' and 'delete' is also unsupported.
+  /* if (!in_array($op, ['view', 'update', 'delete'])) {
+    return AccessResult::neutral();
+  }
+
+  // Some modules, including the code in \Drupal\node\NodeForm::access() may
+  // check for 'view', 'update' or 'delete' access on new nodes, even though
+  // that makes little sense. We need to account for it to avoid crashes because
+  // we would otherwise query the DB with a non-existent node ID.
+  if ($node->isNew()) {
+    return AccessResult::neutral();
+  }
+
+  $type = $node->bundle();
+
+  // Only act if there are group content types for this node type.
+  $group_content_types = GroupContentType::loadByContentPluginId("group_node:$type");
+  if (empty($group_content_types)) {
+    return AccessResult::neutral();
+  }
+
+  // Load all the group content for this node.
+  $group_contents = \Drupal::entityTypeManager()
+    ->getStorage('group_content')
+    ->loadByProperties([
+      'type' => array_keys($group_content_types),
+      'entity_id' => $node->id(),
+    ]);
+
+  // If the node does not belong to any group, we have nothing to say.
+  if (empty($group_contents)) {
+    return AccessResult::neutral();
+  } */
+
+  /** @var \Drupal\group\Entity\GroupInterface[] $groups */
+  /* $groups = [];
+  foreach ($group_contents as $group_content) {
+    /** @var \Drupal\group\Entity\GroupContentInterface $group_content */
+    /* $group = $group_content->getGroup();
+    $groups[$group->id()] = $group;
+  }
+
+  // From this point on you need group to allow you to perform the requested
+  // operation. If you are not granted access for a node belonging to a group,
+  // you should be denied access instead.
+  switch ($op) {
+    case 'view':
+      foreach ($groups as $group) {
+        if ($group->hasPermission("view $type node", $account)) {
+          return AccessResult::allowed();
+        }
+      }
+      break;
+
+    case 'update':
+      foreach ($groups as $group) {
+        if ($group->hasPermission("edit any $type node", $account)) {
+          return AccessResult::allowed();
+        }
+        elseif ($account->id() == $node->getOwnerId() && $group->hasPermission("edit own $type node", $account)) {
+          return AccessResult::allowed();
+        }
+      }
+      break;
+
+    case 'delete':
+      foreach ($groups as $group) {
+        if ($group->hasPermission("delete any $type node", $account)) {
+          return AccessResult::allowed();
+        }
+        elseif ($account->id() == $node->getOwnerId() && $group->hasPermission("delete own $type node", $account)) {
+          return AccessResult::allowed();
+        }
+      }
+      break;
+  }
+
+  return AccessResult::forbidden();*/
+}
