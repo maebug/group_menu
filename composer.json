@@ -1,0 +1,6 @@
+{
+  "name": "drupal/group",
+  "description": "Gives the ability to create and manage menus for groups",
+  "type": "drupal-module",
+  "license": "GPL-2.0+"
+}
