@@ -1,5 +1,5 @@
 {
-  "name": "unlcms/group",
+  "name": "unlcms/group_menu",
   "description": "Gives the ability to create and manage menus for groups",
   "type": "drupal-module",
   "license": "GPL-2.0+"
