@@ -7,11 +7,13 @@
 
 use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContentType;
+use Drupal\group_menu\Entity\GroupMenu;
 use Drupal\system\MenuInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
 
 /**
  * Implements hook_entity_type_alter().
@@ -30,55 +32,49 @@ function group_menu_menu_insert(MenuInterface $menu) {
   \Drupal::service('plugin.manager.group_content_enabler')->clearCachedDefinitions();
 }
 
-/**
- * Implements hook_node_access().
- *
- * When trying to view, update or delete a node it suffices to have the right to
- * do so in only one group the node belongs to. If you wish to prevent any such
- * action on your own terms, implement hook_node_access() in your module.
- */
-function group_menu_menu_access(MenuInterface $node, $op, AccountInterface $account) {
+function group_menu_menu_link_content_access(MenuLinkContent $menu_link, $op, AccountInterface $account) {
   return AccessResult::allowed();
+}
+
+/**
+ * Implements hook_entity_access().
+ *
+ * When trying to view, update or delete a menu it suffices to have the right to
+ * do so in only one group the menu belongs to. If you wish to prevent any such
+ * action on your own terms, implement hook_menu_access() in your module.
+ */
+function group_menu_menu_access(MenuInterface $menu, $op, AccountInterface $account) {
+
   // We do not care about create access as we have our own wizard for that. Any
   // operation aside from 'view', 'update' and 'delete' is also unsupported.
-  /* if (!in_array($op, ['view', 'update', 'delete'])) {
+   if (!in_array($op, ['view', 'update', 'delete'])) {
     return AccessResult::neutral();
   }
 
-  // Some modules, including the code in \Drupal\node\NodeForm::access() may
-  // check for 'view', 'update' or 'delete' access on new nodes, even though
-  // that makes little sense. We need to account for it to avoid crashes because
-  // we would otherwise query the DB with a non-existent node ID.
-  if ($node->isNew()) {
-    return AccessResult::neutral();
-  }
-
-  $type = $node->bundle();
-
-  // Only act if there are group content types for this node type.
-  $group_content_types = GroupContentType::loadByContentPluginId("group_node:$type");
+  // Only act if there are group content types for menus.
+  $group_content_types = GroupContentType::loadByContentPluginId("group_menu:menu");
   if (empty($group_content_types)) {
     return AccessResult::neutral();
   }
 
-  // Load all the group content for this node.
+  // Load all the group content for this menu.
   $group_contents = \Drupal::entityTypeManager()
-    ->getStorage('group_content')
+    ->getStorage('group_menu')
     ->loadByProperties([
       'type' => array_keys($group_content_types),
-      'entity_id' => $node->id(),
+      'entity_id' => $menu->id(),
     ]);
 
-  // If the node does not belong to any group, we have nothing to say.
+  // If the menu does not belong to any group, we have nothing to say.
   if (empty($group_contents)) {
     return AccessResult::neutral();
-  } */
+  }
 
   /** @var \Drupal\group\Entity\GroupInterface[] $groups */
-  /* $groups = [];
+  $groups = [];
   foreach ($group_contents as $group_content) {
     /** @var \Drupal\group\Entity\GroupContentInterface $group_content */
-    /* $group = $group_content->getGroup();
+    $group = $group_content->getGroup();
     $groups[$group->id()] = $group;
   }
 
@@ -88,7 +84,7 @@ function group_menu_menu_access(MenuInterface $node, $op, AccountInterface $acco
   switch ($op) {
     case 'view':
       foreach ($groups as $group) {
-        if ($group->hasPermission("view $type node", $account)) {
+        if ($group->hasPermission("view group menus", $account)) {
           return AccessResult::allowed();
         }
       }
@@ -96,10 +92,7 @@ function group_menu_menu_access(MenuInterface $node, $op, AccountInterface $acco
 
     case 'update':
       foreach ($groups as $group) {
-        if ($group->hasPermission("edit any $type node", $account)) {
-          return AccessResult::allowed();
-        }
-        elseif ($account->id() == $node->getOwnerId() && $group->hasPermission("edit own $type node", $account)) {
+        if ($group->hasPermission("edit group menus", $account)) {
           return AccessResult::allowed();
         }
       }
@@ -107,17 +100,14 @@ function group_menu_menu_access(MenuInterface $node, $op, AccountInterface $acco
 
     case 'delete':
       foreach ($groups as $group) {
-        if ($group->hasPermission("delete any $type node", $account)) {
-          return AccessResult::allowed();
-        }
-        elseif ($account->id() == $node->getOwnerId() && $group->hasPermission("delete own $type node", $account)) {
+        if ($group->hasPermission("delete group menus", $account)) {
           return AccessResult::allowed();
         }
       }
       break;
   }
 
-  return AccessResult::forbidden();*/
+  return AccessResult::forbidden();
 }
 
 function group_menu_form_node_form_alter(&$form, FormStateInterface $form_state) {

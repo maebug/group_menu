@@ -10,3 +10,35 @@ entity.group_menu.group_menu_add_form:
     _group_menu_add_access: 'TRUE'
   options:
     _group_operation_route: 'TRUE'
+
+entity.group_menu.add_link_form:
+  path: '/group/menu/manage/{menu}/add'
+  defaults:
+    _controller: '\Drupal\menu_link_content\Controller\MenuController::addLink'
+    _title: 'Add menu link'
+  requirements:
+    _group_menu_edit_access: 'TRUE'
+
+entity.group_menu.menu_link_content.canonical:
+  path: '/group/menu/item/{menu_link_content}/edit'
+  defaults:
+    _entity_form: 'menu_link_content.default'
+    _title: 'Edit menu link'
+  requirements:
+    _group_menu_edit_access: 'TRUE'
+
+entity.group_menu.menu_link_content.edit_form:
+  path: '/group/menu/item/{menu_link_content}/edit'
+  defaults:
+    _entity_form: 'menu_link_content.default'
+    _title: 'Edit menu link'
+  requirements:
+    _group_menu_edit_access: 'TRUE'
+
+entity.group_menu.menu_link_content.delete_form:
+  path: '/group/menu/item/{menu_link_content}/delete'
+  defaults:
+    _entity_form: 'menu_link_content.delete'
+    _title: 'Delete menu link'
+  requirements:
+    _group_menu_edit_access: 'TRUE'

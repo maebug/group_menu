@@ -5,12 +5,14 @@ namespace Drupal\group_menu\Entity;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\group\Entity\GroupContentInterface;
 use Drupal\group\Entity\GroupContent;
+use Drupal\group\Entity\GroupContentType;
 use Drupal\user\UserInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\system\MenuInterface;
 
 /**
  * Defines the Group menu entity.
@@ -71,6 +73,25 @@ use Drupal\Core\Entity\EntityStorageInterface;
  * )
  */
 class GroupMenu extends GroupContent implements GroupContentInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function loadByMenu(MenuInterface $menu) {
+    $group_content_types = GroupContentType::loadByEntityTypeId($menu->getEntityTypeId());
+
+    // If no responsible group content types were found, we return nothing.
+    if (empty($group_content_types)) {
+      return [];
+    }
+
+    return \Drupal::entityTypeManager()
+      ->getStorage('group_menu')
+      ->loadByProperties([
+        'type' => array_keys($group_content_types),
+        'entity_id' => $menu->id(),
+    ]);
+  }
 
   /**
    * {@inheritdoc}

@@ -30,7 +30,7 @@ class GroupMenuFormStep2 extends GroupContentForm {
    *   The factory for the temp store object.
    */
   public function __construct(EntityManagerInterface $entity_manager, PrivateTempStoreFactory $temp_store_factory) {
-    parent::__construct($temp_store_factory, $entity_manager);
+    parent::__construct($entity_manager);
     $this->privateTempStore = $temp_store_factory->get('group_menu_add_temp');
   }
 

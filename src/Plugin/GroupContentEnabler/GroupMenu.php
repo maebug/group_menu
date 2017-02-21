@@ -37,6 +37,13 @@ class GroupMenu extends GroupContentEnablerBase {
         'weight' => 31,
       ];
     }
+    if ($group->hasPermission("edit group menus", $account)) {
+      $operations["group-menu-update-menu"] = [
+        'title' => $this->t('Edit menus'),
+        'url' => new Url('entity.group_menu.group_menu_add_form', $route_params),
+        'weight' => 32,
+      ];
+    }
 
     return $operations;
   }
@@ -45,12 +52,7 @@ class GroupMenu extends GroupContentEnablerBase {
    * {@inheritdoc}
    */
   public function getPermissions() {
-    $permissions = parent::getPermissions();
-
-    // Unset unwanted permissions defined by the base plugin.
-    unset($permissions["access group_menu overview"]);
-
-    // Add our own permissions for managing the actual nodes.
+    // Add our own permissions for managing the menus.
     $defaults = [
       'description' => 'Only applies to menus that belong to this group.',
     ];
@@ -67,6 +69,7 @@ class GroupMenu extends GroupContentEnablerBase {
     $permissions["edit group menus"] = [
       'title' => 'Edit menus',
     ] + $defaults;
+
 
 
     return $permissions;

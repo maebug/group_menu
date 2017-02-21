@@ -3,3 +3,7 @@ services:
     class: Drupal\group_menu\Access\GroupMenuAddAccessCheck
     tags:
       - { name: access_check, applies_to: _group_menu_add_access }
+  access_check.group_menu.edit:
+    class: Drupal\group_menu\Access\GroupMenuEditAccessCheck
+    tags:
+      - { name: access_check, applies_to: _group_menu_edit_access }
