@@ -7,3 +7,11 @@ services:
     class: Drupal\group_menu\Access\GroupMenuEditAccessCheck
     tags:
       - { name: access_check, applies_to: _group_menu_edit_access }
+  access_check.group_menu.delete:
+    class: Drupal\group_menu\Access\GroupMenuDeleteAccessCheck
+    tags:
+      - { name: access_check, applies_to: _group_menu_delete_access }
+  access_check.group_menu.menu_link.edit:
+    class: Drupal\group_menu\Access\GroupMenuLinkEditAccessCheck
+    tags:
+      - { name: access_check, applies_to: _group_menu_link_edit_access }

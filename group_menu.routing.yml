@@ -11,6 +11,22 @@ entity.group_menu.group_menu_add_form:
   options:
     _group_operation_route: 'TRUE'
 
+entity.group_menu.group_menu_edit_form:
+  path: '/group/menu/manage/{menu}'
+  defaults:
+    _entity_form: 'menu.edit'
+    _title_callback: '\Drupal\menu_ui\Controller\MenuController::menuTitle'
+  requirements:
+    _group_menu_edit_access: 'TRUE'
+
+entity.group_menu.group_menu_delete_form:
+  path: '/group/menu/manage/{menu}/delete'
+  defaults:
+    _entity_form: 'menu.delete'
+    _title: 'Delete menu'
+  requirements:
+    _group_menu_delete_access: 'TRUE'
+
 entity.group_menu.add_link_form:
   path: '/group/menu/manage/{menu}/add'
   defaults:
@@ -25,7 +41,7 @@ entity.group_menu.menu_link_content.canonical:
     _entity_form: 'menu_link_content.default'
     _title: 'Edit menu link'
   requirements:
-    _group_menu_edit_access: 'TRUE'
+    _group_menu_link_edit_access: 'TRUE'
 
 entity.group_menu.menu_link_content.edit_form:
   path: '/group/menu/item/{menu_link_content}/edit'
@@ -33,7 +49,7 @@ entity.group_menu.menu_link_content.edit_form:
     _entity_form: 'menu_link_content.default'
     _title: 'Edit menu link'
   requirements:
-    _group_menu_edit_access: 'TRUE'
+    _group_menu_link_edit_access: 'TRUE'
 
 entity.group_menu.menu_link_content.delete_form:
   path: '/group/menu/item/{menu_link_content}/delete'
@@ -41,4 +57,4 @@ entity.group_menu.menu_link_content.delete_form:
     _entity_form: 'menu_link_content.delete'
     _title: 'Delete menu link'
   requirements:
-    _group_menu_edit_access: 'TRUE'
+    _group_menu_link_edit_access: 'TRUE'

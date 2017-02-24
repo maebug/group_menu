@@ -9,3 +9,10 @@ group_menu.group_menu_add_menu:
   title: 'Create menu'
   appears_on:
     - 'view.group_menus.page_1'
+
+entity.group_menu.add_link_form:
+  route_name: entity.group_menu.add_link_form
+  title: 'Add link'
+  class: \Drupal\menu_ui\Plugin\Menu\LocalAction\MenuLinkAdd
+  appears_on:
+    - 'entity.group_menu.group_menu_edit_form'
