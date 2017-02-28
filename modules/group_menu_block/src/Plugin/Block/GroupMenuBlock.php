@@ -80,6 +80,7 @@ class GroupMenuBlock extends BlockBase {
       array('callable' => 'menu.default_tree_manipulators:checkAccess'),
       array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
     );
+    $build = array();
     foreach ($menus as $menu_name) {
       $tree = \Drupal::menuTree()->load($menu_name, $parameters);
       $tree = \Drupal::menuTree()->transform($tree, $manipulators);
