@@ -144,12 +144,12 @@ function group_menu_form_node_type_form_builder($entity_type, $type, &$form, For
   $type->setThirdPartySetting('menu_ui', 'available_menus', array_values(array_filter($available_menus)));
 }
 
-// This doesn't work to override menu_ui_form_node_form_alter
+// This doesn't work to override menu_ui_form_node_type_form_alter
 // See: https://www.drupal.org/node/1123140, https://www.drupal.org/node/765860
 // Instead, setting module weight with hook_install for now.
 //
 //function group_menu_module_implements_alter(&$implementations, $hook) {
-//  if ($hook == 'form_node_form_alter') {
+//  if ($hook == 'form_node_type_form_alter') {
 //    $group = $implementations['group_menu'];
 //    unset($implementations['group_menu']);
 //    $implementations['group_menu'] = $group;
