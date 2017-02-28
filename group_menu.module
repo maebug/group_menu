@@ -104,60 +104,44 @@ function group_menu_menu_edit_form_submit($form, FormStateInterface $form_state,
   $form_state->setRedirectUrl(Url::fromRoute('entity.group_menu.group_menu_edit_form', ['menu' => $entity->id()]));
 }
 
-function group_menu_form_node_form_alter(&$form, FormStateInterface $form_state) {
-  // From menu_ui_form_node_form_alter
-  // Generate a list of possible parents (not including this link or descendants).
-  // @todo This must be handled in a #process handler.
-  $node = $form_state->getFormObject()->getEntity();
-  $defaults = menu_ui_get_menu_link_defaults($node);
-  /** @var \Drupal\node\NodeTypeInterface $node_type */
-  $node_type = $node->type->entity;
-  /** @var \Drupal\Core\Menu\MenuParentFormSelectorInterface $menu_parent_selector */
-  $menu_parent_selector = \Drupal::service('menu.parent_form_selector');
-  $menu_names = menu_ui_get_menus();
-  $type_menus = $node_type->getThirdPartySetting('menu_ui', 'available_menus', array('main'));
-  $available_menus = array();
-  foreach ($type_menus as $menu) {
-    $available_menus[$menu] = $menu_names[$menu];
-  }
+/**
+ * Implements hook_form_FORM_ID_alter() for \Drupal\node\NodeTypeForm.
+ */
+function group_menu_form_node_type_form_alter(&$form, FormStateInterface $form_state) {
+  $form['#entity_builders'][] = 'group_menu_form_node_type_form_builder';
+}
 
-  // Group Menu addition
+/**
+ * Entity builder for the node type form with menu options.
+ *
+ * @see group_menu_form_node_type_form_alter()
+ */
+function group_menu_form_node_type_form_builder($entity_type, $type, &$form, FormStateInterface $form_state) {
+  $available_menus = $form_state->getValue('menu_options');
+
   $group_content_types = GroupContentType::loadByContentPluginId("group_menu:menu");
   if (!empty($group_content_types)) {
-      $group_contents = \Drupal::entityTypeManager()
-        ->getStorage('group_menu')
-        ->loadByProperties([
-          'type' => array_keys($group_content_types),
-        ]);
+    $group_contents = \Drupal::entityTypeManager()
+      ->getStorage('group_menu')
+      ->loadByProperties([
+        'type' => array_keys($group_content_types),
+      ]);
 
-      if (!empty($group_contents)) {
-        foreach ($group_contents as $group_content) {
-          /** @var \Drupal\group\Entity\GroupContentInterface $group_content */
-          $group = $group_content->getGroup();
+    if (!empty($group_contents)) {
+      foreach ($group_contents as $group_content) {
+        /** @var \Drupal\group\Entity\GroupContentInterface $group_content */
+        $group = $group_content->getGroup();
 
-          $account = \Drupal::currentUser();
-          if ($group->hasPermission('edit group menus', $account)) {
-            $entity_id = $group_content->get('entity_id')->getValue()[0]['target_id'];
-            $available_menus[$entity_id] = $group_content->get('label')->getValue()[0]['value'];
-          }
+        $account = \Drupal::currentUser();
+        if ($group->hasPermission('edit group menus', $account)) {
+          $entity_id = $group_content->get('entity_id')->getValue()[0]['target_id'];
+          $available_menus[$entity_id] = $entity_id;
         }
       }
+    }
   }
 
-  // From menu_ui_form_node_form_alter
-  if ($defaults['id']) {
-    $default = $defaults['menu_name'] . ':' . $defaults['parent'];
-  }
-  else {
-    $default = $node_type->getThirdPartySetting('menu_ui', 'parent', 'main:');
-  }
-  $parent_element = $menu_parent_selector->parentSelectElement($default, $defaults['id'], $available_menus);
-  // If no possible parent menu items were found, there is nothing to display.
-  if (empty($parent_element)) {
-    return;
-  }
-
-  $form['menu']['link']['menu_parent'] = $parent_element;
+  $type->setThirdPartySetting('menu_ui', 'available_menus', array_values(array_filter($available_menus)));
 }
 
 // This doesn't work to override menu_ui_form_node_form_alter
