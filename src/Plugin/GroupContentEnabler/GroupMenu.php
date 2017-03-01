@@ -28,9 +28,9 @@ class GroupMenu extends GroupContentEnablerBase {
   public function getGroupOperations(GroupInterface $group) {
     $account = \Drupal::currentUser();
     $operations = [];
+    $route_params = ['group' => $group->id()];
 
     if ($group->hasPermission("create group menus", $account)) {
-      $route_params = ['group' => $group->id()];
       $operations["group-menu-create-menu"] = [
         'title' => $this->t('Create menu'),
         'url' => new Url('entity.group_menu.group_menu_add_form', $route_params),
