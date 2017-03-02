@@ -4,6 +4,7 @@ package: Group
 
 dependencies:
  - group:group
+ - menu_ui
 
 type: module
 core: 8.x

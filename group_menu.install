@@ -1,8 +1,0 @@
-<?php
-
-/**
- * Implements hook_install().
- */
-function group_menu_install() {
-  module_set_weight('group_menu', 1);
-}

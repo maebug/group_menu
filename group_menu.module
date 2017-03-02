@@ -105,19 +105,20 @@ function group_menu_menu_edit_form_submit($form, FormStateInterface $form_state,
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for \Drupal\node\NodeTypeForm.
- */
-function group_menu_form_node_type_form_alter(&$form, FormStateInterface $form_state) {
-  $form['#entity_builders'][] = 'group_menu_form_node_type_form_builder';
-}
-
-/**
- * Entity builder for the node type form with menu options.
+ * Implements hook_form_BASE_FORM_ID_alter() for \Drupal\node\NodeForm.
  *
- * @see group_menu_form_node_type_form_alter()
+ * Adds Group Menus to the available menus set by menu_ui.
  */
-function group_menu_form_node_type_form_builder($entity_type, $type, &$form, FormStateInterface $form_state) {
-  $available_menus = $form_state->getValue('menu_options');
+function group_menu_form_node_form_alter(&$form, FormStateInterface $form_state) {
+  $node = $form_state->getFormObject()->getEntity();
+  $node_type = $node->type->entity;
+  $available_menus = $node_type->getThirdPartySetting('menu_ui', 'available_menus', array('main'));
+
+  // Clear out available menus if user does not have permission so that TRUE
+  // can be set in group_menu_process_access().
+  if (!\Drupal::currentUser()->hasPermission('administer menu')) {
+    $available_menus = array();
+  }
 
   $group_content_types = GroupContentType::loadByContentPluginId("group_menu:menu");
   if (!empty($group_content_types)) {
@@ -141,17 +142,30 @@ function group_menu_form_node_type_form_builder($entity_type, $type, &$form, For
     }
   }
 
-  $type->setThirdPartySetting('menu_ui', 'available_menus', array_values(array_filter($available_menus)));
+  $node_type->setThirdPartySetting('menu_ui', 'available_menus', array_values(array_filter($available_menus)));
 }
 
-// This doesn't work to override menu_ui_form_node_type_form_alter
-// See: https://www.drupal.org/node/1123140, https://www.drupal.org/node/765860
-// Instead, setting module weight with hook_install for now.
-//
-//function group_menu_module_implements_alter(&$implementations, $hook) {
-//  if ($hook == 'form_node_type_form_alter') {
-//    $group = $implementations['group_menu'];
-//    unset($implementations['group_menu']);
-//    $implementations['group_menu'] = $group;
-//  }
-//}
+/**
+ * Implements hook_element_info_alter().
+ *
+ * If a user does not have the 'administer menu' permission, the '#access' value
+ * set in menu_ui_form_node_form_alter() needs to be overridden so that a Group
+ * member can edit the Menu Settings on \Drupal\node\NodeForm.
+ */
+function group_menu_element_info_alter(array &$types) {
+  if (isset($types['details'])) {
+    $types['details']['#process'][] = 'group_menu_process_access';
+  }
+}
+
+/**
+ * Form element process handler setting menu edit access.
+ *
+ * @see group_menu_element_info_alter().
+ */
+function group_menu_process_access($element) {
+  if ($element['#parents'][0] == 'menu') {
+    $element['#access'] = TRUE;
+  }
+  return $element;
+}
