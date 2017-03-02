@@ -26,15 +26,11 @@ class GroupMenuEditController extends ControllerBase {
     $this->entityFormBuilder = $entity_form_builder;
   }
 
+  /**
+   * {inheritdoc}
+   */
   public static function create(ContainerInterface $container) {
     return new static($container->get('entity.form_builder'));
   }
 
-  public function edit(MenuInterface $menu) {
-    return $this->entityFormBuilder()->getForm($menu, 'Drupal\group_menu\Form\GroupMenuForm');
-    return array(
-      '#type' => 'markup',
-      '#markup' => $this->t('This is a test'),
-    );
-  }
 }

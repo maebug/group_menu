@@ -6,7 +6,6 @@ use Drupal\group\Entity\GroupInterface;
 use Drupal\group\Plugin\GroupContentEnablerBase;
 use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Provides a content enabler for menus.
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\Route;
  * @GroupContentEnabler(
  *   id = "group_menu",
  *   label = @Translation("Group menu"),
- *   description = @Translation("Adds menus to groups both publicly and privately."),
+ *   description = @Translation("Adds menus to groups."),
  *   entity_type_id = "menu",
  *   pretty_path_key = "menu",
  *   deriver = "Drupal\group_menu\Plugin\GroupContentEnabler\GroupMenuDeriver"
@@ -70,7 +69,9 @@ class GroupMenu extends GroupContentEnablerBase {
       'title' => 'Edit menus',
     ] + $defaults;
 
-
+    $permissions["delete group menus"] = [
+      'title' => 'Delete menus',
+    ] + $defaults;
 
     return $permissions;
   }

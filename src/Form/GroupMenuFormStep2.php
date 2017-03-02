@@ -24,12 +24,12 @@ class GroupMenuFormStep2 extends GroupContentForm {
   /**
    * Constructs a GroupNodeFormStep2 object.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
    * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
    *   The factory for the temp store object.
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, PrivateTempStoreFactory $temp_store_factory) {
+  public function __construct(PrivateTempStoreFactory $temp_store_factory, EntityManagerInterface $entity_manager) {
     parent::__construct($temp_store_factory, $entity_manager);
     $this->privateTempStore = $temp_store_factory->get('group_menu_add_temp');
   }
@@ -39,8 +39,8 @@ class GroupMenuFormStep2 extends GroupContentForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
-      $container->get('user.private_tempstore')
+      $container->get('user.private_tempstore'),
+      $container->get('entity.manager')
     );
   }
 
@@ -96,8 +96,8 @@ class GroupMenuFormStep2 extends GroupContentForm {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
    *
-   * @see \Drupal\gnode\Controller\GroupNodeWizardController::add()
-   * @see \Drupal\gnode\Form\GroupNodeFormStep1
+   * @see \Drupal\group_menu\Controller\GroupNodeWizardController::add()
+   * @see \Drupal\group_menu\Form\GroupNodeFormStep1
    */
   public function back(array &$form, FormStateInterface $form_state) {
     $storage_id = $form_state->get('storage_id');

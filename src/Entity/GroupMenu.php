@@ -2,16 +2,11 @@
 
 namespace Drupal\group_menu\Entity;
 
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\group\Entity\GroupContentInterface;
 use Drupal\group\Entity\GroupContent;
 use Drupal\group\Entity\GroupContentType;
-use Drupal\user\UserInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\EntityChangedTrait;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\system\MenuInterface;
 
 /**
@@ -28,7 +23,7 @@ use Drupal\system\MenuInterface;
  *     singular = "@count group menu item",
  *     plural = "@count group menu items"
  *   ),
- *   bundle_label = @Translation("Group content type"),
+ *   bundle_label = @Translation("Group menu type"),
  *   handlers = {
  *     "storage" = "Drupal\group\Entity\Storage\GroupContentStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
@@ -75,7 +70,13 @@ use Drupal\system\MenuInterface;
 class GroupMenu extends GroupContent implements GroupContentInterface {
 
   /**
-   * {@inheritdoc}
+   * Loads the group menu entities by menu.
+   *
+   * @param \Drupal\system\MenuInterface $menu
+   *   The menu to load the groups for.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   List of group menu entities.
    */
   public static function loadByMenu(MenuInterface $menu) {
     $group_content_types = GroupContentType::loadByEntityTypeId($menu->getEntityTypeId());
@@ -106,14 +107,15 @@ class GroupMenu extends GroupContent implements GroupContentInterface {
       ->setDescription(t('The entity to add to the group.'))
       ->setSetting('target_type', 'menu')
       ->setDisplayOptions('form', [
-        'type' => 'entity_reference_autocomplete',
-        'weight' => 5,
-        'settings' => [
-          'match_operator' => 'CONTAINS',
-          'size' => '60',
-          'placeholder' => '',
-        ],
-      ])
+          'type' => 'entity_reference_autocomplete',
+          'weight' => 5,
+          'settings' => [
+            'match_operator' => 'CONTAINS',
+            'size' => '60',
+            'placeholder' => '',
+          ],
+        ]
+      )
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE)
       ->setRequired(TRUE);

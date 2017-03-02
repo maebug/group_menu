@@ -1,10 +1,8 @@
 name: Group Menu Block
+type: module
 description: Provides a block to display group menus
 package: Group
-
-dependencies:
- - 'gnode'
- - 'group_menu'
-
-type: module
 core: 8.x
+dependencies:
+ - gnode
+ - group_menu

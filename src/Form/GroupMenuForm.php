@@ -9,8 +9,8 @@ use Drupal\menu_ui\MenuForm;
  * Group menu extention of base menu form.
  */
 class GroupMenuForm extends MenuForm {
-  
-  /*
+
+  /**
    * {@inheritdoc}
    */
   protected function buildOverviewForm(array &$form, FormStateInterface $form_state) {
@@ -22,4 +22,5 @@ class GroupMenuForm extends MenuForm {
     ]);
     return $form;
   }
-} 
+
+}

@@ -2,27 +2,20 @@
 
 /**
  * @file
- * Enables Group functionality for the Menu module.
+ * Enables menu functionality for the group module.
  */
 
-use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupContentType;
-use Drupal\group_menu\Entity\GroupMenu;
 use Drupal\system\MenuInterface;
-use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Database\Database;
-use Drupal\Core\Database\Query\AlterableInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
-use Drupal\menu_link_content\Entity\MenuLinkContent;
 
 /**
  * Implements hook_entity_type_alter().
  */
 function group_menu_entity_type_alter(array &$entity_types) {
   // Use a different list builder to exclude group menus
-  $entity_types['menu']->setHandlerClass('list_builder', 'Drupal\group_menu\MenuListBuilder');
+  $entity_types['menu']->setHandlerClass('list_builder', 'Drupal\group_menu\GroupMenuListBuilder');
 
   /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
   // Add the menu creation wizard steps as entity forms.
@@ -117,7 +110,7 @@ function group_menu_form_node_form_alter(&$form, FormStateInterface $form_state)
   // Clear out available menus if user does not have permission so that TRUE
   // can be set in group_menu_process_access().
   if (!\Drupal::currentUser()->hasPermission('administer menu')) {
-    $available_menus = array();
+    $available_menus = [];
   }
 
   $group_content_types = GroupContentType::loadByContentPluginId("group_menu:menu");

@@ -23,8 +23,8 @@ class GroupMenuController extends GroupContentController {
       /** @var \Drupal\group\Entity\GroupContentTypeInterface $group_content_type */
       $bundles[$group_content_type->getContentPluginId()] = $bundle;
     }
-    
+
     return $bundles;
   }
-
+  
 }

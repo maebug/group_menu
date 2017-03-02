@@ -10,7 +10,6 @@ use Drupal\Core\Utility\LinkGeneratorInterface;
 use Drupal\user\PrivateTempStoreFactory;
 use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -33,7 +32,7 @@ class GroupMenuFormStep1 extends MenuForm {
    * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
    *   The factory for the temp store object.
    */
-  public function __construct(QueryFactory $entity_query_factory, MenuLinkManagerInterface $menu_link_manager, 
+  public function __construct(QueryFactory $entity_query_factory, MenuLinkManagerInterface $menu_link_manager,
 MenuLinkTreeInterface $menu_tree, LinkGeneratorInterface $link_generator, PrivateTempStoreFactory $temp_store_factory) {
     parent::__construct($entity_query_factory, $menu_link_manager, $menu_tree, $link_generator);
     $this->privateTempStore = $temp_store_factory->get('group_menu_add_temp');
@@ -44,9 +43,9 @@ MenuLinkTreeInterface $menu_tree, LinkGeneratorInterface $link_generator, Privat
    */
   public static function create(ContainerInterface $container) {
     return new static (
-      $container->get('entity.query'), 
-      $container->get('plugin.manager.menu.link'), 
-      $container->get('menu.link_tree'), 
+      $container->get('entity.query'),
+      $container->get('plugin.manager.menu.link'),
+      $container->get('menu.link_tree'),
       $container->get('link_generator'),
       $container->get('user.private_tempstore')
     );
@@ -79,8 +78,8 @@ MenuLinkTreeInterface $menu_tree, LinkGeneratorInterface $link_generator, Privat
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
    *
-   * @see \Drupal\gnode\Controller\GroupNodeWizardController::add()
-   * @see \Drupal\gnode\Form\GroupNodeFormStep2
+   * @see \Drupal\group_menu\Controller\GroupNodeWizardController::add()
+   * @see \Drupal\group_menu\Form\GroupNodeFormStep2
    */
   public function saveTemporary(array &$form, FormStateInterface $form_state) {
     $storage_id = $form_state->get('storage_id');
@@ -102,7 +101,7 @@ MenuLinkTreeInterface $menu_tree, LinkGeneratorInterface $link_generator, Privat
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
    *
-   * @see \Drupal\gnode\Controller\GroupNodeWizardController::add()
+   * @see \Drupal\group_menu\Controller\GroupNodeWizardController::add()
    */
   public function cancel(array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\group\Entity\GroupInterface $group */

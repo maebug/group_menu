@@ -147,7 +147,7 @@ class GroupMenuWizardController extends ControllerBase {
    * @param \Drupal\group\Entity\GroupInterface $group
    *   The group to add the group menu to.
    *
-   * @return array
+   * @return mixed
    *   The group menu creation overview page.
    */
   public function addPage(GroupInterface $group) {
@@ -187,14 +187,9 @@ class GroupMenuWizardController extends ControllerBase {
       return new RedirectResponse($url->toString());
     }
 
-    // Get the menu type storage handler.
-    $storage_handler = $this->entityTypeManager->getStorage('menu');
-
     // Set the info for all of the remaining bundles.
     foreach ($bundles as $bundle => $group_content_type) {
       $plugin = $group_content_type->getContentPlugin();
-      //$bundle_label = $storage_handler->load($plugin->getEntityBundle())->label();
-
       $build['#bundles'][$bundle] = [
         'label' => 'menu',
         'description' => $this->t('Create a menu for the group.'),
