@@ -15,6 +15,7 @@ use Drupal\Core\Url;
  */
 function group_menu_entity_type_alter(array &$entity_types) {
   // Use a different list builder to exclude group menus
+  $entity_types['menu']->setHandlerClass('storage', 'Drupal\group_menu\Entity\GroupMenuEntityStorage');
   $entity_types['menu']->setHandlerClass('list_builder', 'Drupal\group_menu\GroupMenuListBuilder');
 
   /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
