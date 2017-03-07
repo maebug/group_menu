@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Add configuration option to exclude group menus from configuration sync.
+ */
+function group_menu_update_8001() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('group_menu.settings');
+  $config->set('config_sync_group_menu_ignore', TRUE);
+  $config->save(TRUE);
+}
+
+/**
+ * Add configuration to control hiding group menus from default menu list.
+ */
+function group_menu_update_8002() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('group_menu.settings');
+  $config->set('group_menu_hide_list', TRUE);
+  $config->save(TRUE);
+}

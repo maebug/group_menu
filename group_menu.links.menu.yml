@@ -1,0 +1,6 @@
+group_menu.settings:
+  title: 'Group menu settings'
+  description: 'Configure the menu module settings.'
+  route_name: 'group_menu.settings'
+  parent: 'system.admin_group'
+  weight: 15

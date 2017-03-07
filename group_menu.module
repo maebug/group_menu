@@ -6,17 +6,47 @@
  */
 
 use Drupal\group\Entity\GroupContentType;
+use Drupal\group_menu\Form\GroupMenuConfigSync;
 use Drupal\system\MenuInterface;
+use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function group_menu_form_config_export_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Add submit handler if proper configuration is set.
+  $config = \Drupal::config('group_menu.settings');
+  if ($config->get('config_sync_group_menu_ignore')) {
+    $form['#submit'][] = 'group_menu_config_export_form_submit';
+  }
+}
+
+/**
+ * Submit callback for config_export_form form.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param string $form_id
+ *   String representing the name of the form itself.
+ */
+function group_menu_config_export_form_submit($form, FormStateInterface $form_state, $form_id) {
+  $form_state->setRedirect('group_menu.config.export_download');
+}
 
 /**
  * Implements hook_entity_type_alter().
  */
 function group_menu_entity_type_alter(array &$entity_types) {
-  // Use a different list builder to exclude group menus
-  $entity_types['menu']->setHandlerClass('storage', 'Drupal\group_menu\Entity\GroupMenuEntityStorage');
-  $entity_types['menu']->setHandlerClass('list_builder', 'Drupal\group_menu\GroupMenuListBuilder');
+  // Use a different list builder to exclude group menus.
+  $config = \Drupal::config('group_menu.settings');
+  if ($config->get('group_menu_hide_list')) {
+    $entity_types['menu']->setHandlerClass('storage', 'Drupal\group_menu\Entity\GroupMenuEntityStorage');
+    $entity_types['menu']->setHandlerClass('list_builder', 'Drupal\group_menu\GroupMenuListBuilder');
+  }
 
   /** @var \Drupal\Core\Entity\EntityTypeInterface[] $entity_types */
   // Add the menu creation wizard steps as entity forms.
@@ -81,6 +111,16 @@ function group_menu_form_menu_edit_form_alter(&$form, FormStateInterface $form_s
   }
 }
 
+/**
+ * Submit callback to change redirect URL for menu content edit/delete forms.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The current state of the form.
+ * @param string $form_id
+ *   String representing the name of the form itself.
+ */
 function group_menu_menu_link_edit_form_submit($form, FormStateInterface $form_state, $form_id) {
   $build_info = $form_state->getBuildInfo();
   $entity = $build_info['callback_object']->getEntity()->getMenuName();

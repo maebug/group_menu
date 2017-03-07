@@ -1,0 +1,4 @@
+group_menu.settings:
+  title: 'Group menu settings'
+  base_route: 'entity.group.collection'
+  route_name: 'group_menu.settings'

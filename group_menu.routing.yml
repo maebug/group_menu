@@ -1,6 +1,15 @@
 route_callbacks:
   - '\Drupal\group_menu\Routing\GroupMenuRouteProvider::getRoutes'
 
+# General routes for the Group module.
+group_menu.settings:
+  path: 'admin/group/group_menu_settings'
+  defaults:
+    _form: '\Drupal\group_menu\Form\GroupMenuSettingsForm'
+    _title: 'Group menu settings'
+  requirements:
+    _permission: 'administer group'
+
 entity.group_menu.group_menu_add_form:
   path: '/group/{group}/menu/create/new'
   defaults:
@@ -58,3 +67,18 @@ entity.group_menu.menu_link_content.delete_form:
     _title: 'Delete menu link'
   requirements:
     _group_menu_link_edit_access: 'TRUE'
+
+group_menu.config.export_download:
+  path: '/admin/config/development/configuration/full/group-menu/export-download'
+  defaults:
+    _controller: '\Drupal\group_menu\Controller\GroupMenuConfigController::downloadExport'
+  requirements:
+    _permission: 'export configuration'
+
+group_menu.config.sync:
+  path: '/admin/config/development/configuration'
+  defaults:
+    _form: '\Drupal\group_menu\Form\GroupMenuConfigSync'
+    _title: 'Synchronize'
+  requirements:
+    _permission: 'synchronize configuration'
