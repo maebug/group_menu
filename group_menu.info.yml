@@ -2,7 +2,7 @@ name: Group Menu
 type: module
 description: Gives the ability to create and manage menus for groups
 package: Group
-core: 8.x
+core: 8.3.x
 dependencies:
  - group
  - menu_ui
