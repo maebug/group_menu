@@ -27,14 +27,17 @@ class GroupMenuFormStep1 extends MenuForm {
   /**
    * Constructs a GroupNodeFormStep1 object.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Menu\MenuLinkManagerInterface $menu_link_manager
+   *   The menu link manager.
+   * @param \Drupal\Core\Menu\MenuLinkTreeInterface $menu_tree
+   *   The menu tree service.
+   * @param \Drupal\Core\Utility\LinkGeneratorInterface $link_generator
+   *   The link generator.
    * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
    *   The factory for the temp store object.
    */
-  public function __construct(QueryFactory $entity_query_factory, MenuLinkManagerInterface $menu_link_manager,
-MenuLinkTreeInterface $menu_tree, LinkGeneratorInterface $link_generator, PrivateTempStoreFactory $temp_store_factory) {
-    parent::__construct($entity_query_factory, $menu_link_manager, $menu_tree, $link_generator);
+  public function __construct(MenuLinkManagerInterface $menu_link_manager, MenuLinkTreeInterface $menu_tree, LinkGeneratorInterface $link_generator, PrivateTempStoreFactory $temp_store_factory) {
+    parent::__construct($menu_link_manager, $menu_tree, $link_generator);
     $this->privateTempStore = $temp_store_factory->get('group_menu_add_temp');
   }
 
@@ -43,7 +46,6 @@ MenuLinkTreeInterface $menu_tree, LinkGeneratorInterface $link_generator, Privat
    */
   public static function create(ContainerInterface $container) {
     return new static (
-      $container->get('entity.query'),
       $container->get('plugin.manager.menu.link'),
       $container->get('menu.link_tree'),
       $container->get('link_generator'),
